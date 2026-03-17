@@ -1,0 +1,40 @@
+# Gitignore for a full-stack project with Python backend and Node.js/React frontend
+
+# Python (Backend) ignores
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+.pytest_cache/
+.flaskenv
+
+# Node.js (Frontend) ignores
+node_modules/
+build/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Docker ignores
+*.swp
+*.bak
+*.swo
+
+# Database ignores
+*.sqlite3
+*.db
+
+# IDE specific ignores
+.idea/
+.vscode/
+
+# OS generated files
+.DS_Store
+thumbs.db

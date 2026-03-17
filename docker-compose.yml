@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_DB: loan_app_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/loan_app_db
+      SECRET_KEY: a_super_secret_key_for_prod # Replace with a strong, unique key in production
+    depends_on:
+      - db
+    # Command to run migrations (if using Flask-Migrate)
+    # command: sh -c "flask db upgrade && flask run"
+
+  frontend:
+    build: ./frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_BASE_URL: http://localhost:5000
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+
+volumes:
+  db_data:
