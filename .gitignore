@@ -1,0 +1,26 @@
+# Gitignore for Python (backend)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+.ipynb_checkpoints
+.env
+
+# Gitignore for Node.js (frontend)
+node_modules/
+build/
+.DS_Store
+*.log
+
+# IDE specific files
+.idea/
+.vscode/
+
+# OS generated files
+.DS_Store
+.localized
+Thumbs.db
