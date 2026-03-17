@@ -4,9 +4,12 @@ from . import models, schemas, crud
 from .database import SessionLocal, engine, get_db
 from fastapi.middleware.cors import CORSMiddleware
 
-models.Base.metadata.create_all(bind=engine)
-
 app = FastAPI()
+
+@app.on_event("startup")
+async def startup_event():
+    # Create database tables on startup
+    models.Base.metadata.create_all(bind=engine)
 
 # CORS middleware to allow requests from the frontend
 app.add_middleware(
