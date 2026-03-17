@@ -1,0 +1,15 @@
+.html, body, #root, .App {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align to top, not center vertically */
+  padding: 20px;
+  box-sizing: border-box;
+}
