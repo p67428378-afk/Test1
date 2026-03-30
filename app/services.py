@@ -2,8 +2,11 @@
 import uuid
 from datetime import datetime
 from typing import List, Dict, Any
+from sqlalchemy.orm import Session
+import hashlib
 
 from app.schemas import LoanApplicationRequest, UnderwritingDecision
+from app.models import AuditLog
 
 def assess_risk(applicant_data: LoanApplicationRequest) -> Dict[str, Any]:
     """Mocks the risk assessment based on predefined rules."""
@@ -43,12 +46,30 @@ def check_rbi_defaulter_list(applicant_data: LoanApplicationRequest) -> Dict[str
     is_defaulter = "RBIISDEFUL" in applicant_data.personal_details.pan.upper()
     return {"is_defaulter": is_defaulter, "details": "Mock RBI check result" if is_defaulter else "No record found"}
 
-def log_audit_trail(applicant_data: LoanApplicationRequest, decision: UnderwritingDecision) -> str:
-    """Mocks logging the audit trail."""
-    # In a real scenario, this would persist to a NoSQL DB like MongoDB or a relational audit table
+def log_audit_trail(db: Session, applicant_data: LoanApplicationRequest, decision: UnderwritingDecision) -> str:
+    """Logs the audit trail to the database."""
     audit_id = str(uuid.uuid4())
-    print(f"Audit Trail Logged (Mock): Audit ID {audit_id} for Decision ID {decision.decision_id}")
-    # Store applicant_data and decision in a mock database or log file
+    event_timestamp = datetime.utcnow()
+
+    # Create a hash of the audit record for immutability
+    # In a real system, this would be more robust, potentially including a digital signature
+    audit_data_string = f"{audit_id}{decision.decision_id}{event_timestamp}{decision.final_status}{applicant_data.model_dump_json()}{decision.model_dump_json()}"
+    data_hash = hashlib.sha256(audit_data_string.encode('utf-8')).hexdigest()
+
+    audit_entry = AuditLog(
+        audit_id=audit_id,
+        decision_id=decision.decision_id,
+        event_timestamp=event_timestamp,
+        event_type="Final Decision", # This could be more granular, e.g., "Application Received", "Risk Assessed", etc.
+        service_name="LoanUnderwritingService",
+        payload_snapshot=applicant_data.model_dump_json(),
+        result_details=decision.model_dump_json(),
+        user_id="system", # In a real system, this would come from authentication context
+        data_hash=data_hash
+    )
+    db.add(audit_entry)
+    db.commit()
+    db.refresh(audit_entry)
     return audit_id
 
 def make_underwriting_decision(

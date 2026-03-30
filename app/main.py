@@ -1,9 +1,10 @@
 
-from fastapi import FastAPI, HTTPException, status, Request
+from fastapi import FastAPI, HTTPException, status, Request, Depends
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from datetime import datetime
 import uuid
+from sqlalchemy.orm import Session
 
 from app.schemas import LoanApplicationRequest, UnderwritingDecision, HealthCheckResponse
 from app.services import (
@@ -13,6 +14,7 @@ from app.services import (
     log_audit_trail,
     make_underwriting_decision
 )
+from app.database import get_db
 
 app = FastAPI(
     title="Loan Underwriting Microservice",
@@ -34,7 +36,7 @@ async def health_check():
     return {"status": "healthy"}
 
 @app.post("/underwrite", response_model=UnderwritingDecision, status_code=status.HTTP_200_OK, summary="Underwrite Loan Application")
-async def underwrite_loan_application(request: LoanApplicationRequest):
+async def underwrite_loan_application(request: LoanApplicationRequest, db: Session = Depends(get_db)):
     """Processes a loan application to assess creditworthiness and return a decision."""
     try:
         # 1. Assess Risk based on predefined rules
@@ -55,8 +57,6 @@ async def underwrite_loan_application(request: LoanApplicationRequest):
         decision_timestamp = datetime.now()
 
         # 5. Log Comprehensive Audit Trail
-        # The audit trail service is mocked for now, but in a real scenario,
-        # it would persist all inputs, intermediate results, and the final decision.
         underwriting_decision = UnderwritingDecision(
             decision_id=decision_id,
             applicant_id=request.applicant_id,
@@ -66,9 +66,9 @@ async def underwrite_loan_application(request: LoanApplicationRequest):
             ml_score=ml_inference_result["ml_score"],
             rbi_check_result=rbi_check_result,
             triggered_rules=risk_assessment["triggered_rules"],
-            audit_trail_id=""
+            audit_trail_id="" # Temporarily empty, will be filled after logging
         )
-        audit_trail_id = log_audit_trail(request, underwriting_decision)
+        audit_trail_id = log_audit_trail(db, request, underwriting_decision) # Pass db session
         underwriting_decision.audit_trail_id = audit_trail_id
 
         return underwriting_decision
