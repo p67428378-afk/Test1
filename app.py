@@ -47,7 +47,7 @@ def create_app():
 
     @app.route('/profile/<int:user_id>', methods=['GET'])
     def get_profile(user_id):
-        user = User.query.get(user_id)
+        user = User.query.filter_by(name=user_id).first()
 
         if not user:
             return jsonify({'error': 'User not found'}), 404
