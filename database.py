@@ -1,4 +1,4 @@
-from datetime import datetime, UTC
+from datetime import datetime, UTC # Added UTC import
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 
@@ -10,8 +10,8 @@ class User(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now(UTC))
-    updated_at = db.Column(db.DateTime, default=datetime.now(UTC), onupdate=datetime.now(UTC))
+    created_at = db.Column(db.TIMESTAMP(timezone=True), default=lambda: datetime.now(UTC)) # Changed to TIMESTAMP(timezone=True)
+    updated_at = db.Column(db.TIMESTAMP(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)) # Changed to TIMESTAMP(timezone=True)
 
     def __repr__(self):
         return f"<User {self.email}>"
