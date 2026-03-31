@@ -1,14 +1,17 @@
 import pytest
 from app import create_app
-from database import db, User
+from database import db, User, bcrypt
+from config import Config
 
-@pytest.fixture(scope='session')
+class TestConfig(Config):
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    TESTING = True
+    WTF_CSRF_ENABLED = False
+
+@pytest.fixture(scope='module')
 def app():
     app = create_app()
-    app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    
+    app.config.from_object(TestConfig)
     with app.app_context():
         db.create_all()
         yield app
@@ -21,9 +24,19 @@ def client(app):
 @pytest.fixture(scope='function')
 def session(app):
     with app.app_context():
-        connection = db.engine.connect()
-        transaction = connection.begin()
-        db.session.configure(bind=connection) # Configure the session to use the connection
+        # Establish a nested session for the test
+        db.session.begin_nested()
         yield db.session
-        transaction.rollback()
-        db.session.remove()
+        db.session.rollback() # Rollback the nested transaction
+        db.session.remove() # Remove the session
+
+@pytest.fixture(scope='function')
+def create_user(session):
+    from database import User # Explicit import
+    def _create_user(name, email, password):
+        user = User(name=name, email=email)
+        user.set_password(password)
+        session.add(user)
+        session.commit()
+        return user
+    return _create_user

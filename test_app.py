@@ -1,5 +1,18 @@
 import pytest
 from datetime import datetime, UTC
+from database import db, User
+from app import bcrypt
+
+@pytest.fixture(scope='function')
+def create_user(session):
+    def _create_user(name, email, password):
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+        user = User(name=name, email=email, password_hash=hashed_password)
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+        return user
+    return _create_user
 
 def test_register_user_success(client):
     response = client.post('/register', json={
@@ -11,14 +24,8 @@ def test_register_user_success(client):
     assert 'message' in response.json
     assert response.json['message'] == 'User registered successfully'
 
-def test_register_user_email_already_registered(client):
-    # Register once
-    client.post('/register', json={
-        'name': 'Test User',
-        'email': 'duplicate@example.com',
-        'password': 'password123'
-    })
-    # Try to register again with the same email
+def test_register_user_email_already_registered(client, create_user):
+    create_user('Duplicate User', 'duplicate@example.com', 'password123')
     response = client.post('/register', json={
         'name': 'Another User',
         'email': 'duplicate@example.com',
@@ -38,12 +45,8 @@ def test_register_user_missing_fields(client):
     assert 'error' in response.json
     assert response.json['error'] == 'Name, email, and password are required'
 
-def test_login_user_success(client):
-    client.post('/register', json={
-        'name': 'Login User',
-        'email': 'login@example.com',
-        'password': 'loginpassword'
-    })
+def test_login_user_success(client, create_user):
+    create_user('Login User', 'login@example.com', 'loginpassword')
     response = client.post('/login', json={
         'email': 'login@example.com',
         'password': 'loginpassword'
@@ -52,12 +55,8 @@ def test_login_user_success(client):
     assert 'message' in response.json
     assert response.json['message'] == 'Login successful'
 
-def test_login_user_invalid_credentials(client):
-    client.post('/register', json={
-        'name': 'Invalid User',
-        'email': 'invalid@example.com',
-        'password': 'invalidpassword'
-    })
+def test_login_user_invalid_credentials(client, create_user):
+    create_user('Invalid User', 'invalid@example.com', 'invalidpassword')
     response = client.post('/login', json={
         'email': 'invalid@example.com',
         'password': 'wrongpassword'
@@ -66,17 +65,8 @@ def test_login_user_invalid_credentials(client):
     assert 'error' in response.json
     assert response.json['error'] == 'Invalid email or password'
 
-def test_get_profile_success(client, session):
-    # Manually add a user to the database for profile retrieval
-    from database import User
-    from app import bcrypt
-    
-    hashed_password = bcrypt.generate_password_hash('profilepassword').decode('utf-8')
-    user = User(name='Profile User', email='profile@example.com', password_hash=hashed_password)
-    session.add(user)
-    session.commit()
-    session.refresh(user) # Refresh to get the ID
-
+def test_get_profile_success(client, create_user):
+    user = create_user('Profile User', 'profile@example.com', 'profilepassword')
     response = client.get(f'/profile/{user.id}')
     assert response.status_code == 200
     assert 'user_id' in response.json
@@ -90,14 +80,8 @@ def test_get_profile_user_not_found(client):
     assert 'error' in response.json
     assert response.json['error'] == 'User not found'
 
-def test_datetime_utcnow_deprecation_fix(session):
-    from database import User
-    # Create a dummy user to trigger the default timestamp
-    user = User(name='Time Test', email='time@example.com', password_hash='dummy_hash')
-    session.add(user)
-    session.commit()
-    session.refresh(user)
-
+def test_datetime_utcnow_deprecation_fix(session, create_user):
+    user = create_user('Time Test', 'time@example.com', 'dummy_hash')
     assert user.created_at is not None
     assert isinstance(user.created_at, datetime)
     assert user.updated_at is not None
