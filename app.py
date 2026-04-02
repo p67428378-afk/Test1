@@ -19,7 +19,7 @@ def create_app():
         if not all([name, email, password]):
             return jsonify({'error': 'Name, email, and password are required'}), 400
 
-        if User.query.filter_by(email=email).first():
+        if User.query.filter_by(name=email).first():
             return jsonify({'error': 'Email already registered'}), 409
 
         new_user = User(name=name, email=email)
