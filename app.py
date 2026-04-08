@@ -19,7 +19,7 @@ def create_app():
         if not all([name, email, password]):
             return jsonify({'error': 'Name, email, and password are required'}), 400
 
-        if User.query.filter_by(name=email).first():
+        if User.query.filter_by(email=email).first(): # FIX: Changed 'name' to 'email'
             return jsonify({'error': 'Email already registered'}), 409
 
         new_user = User(name=name, email=email)
@@ -47,7 +47,7 @@ def create_app():
 
     @app.route('/profile/<int:user_id>', methods=['GET'])
     def get_profile(user_id):
-        user = User.query.filter_by(name=user_id).first()
+        user = User.query.filter_by(id=user_id).first() # FIX: Changed 'name' to 'id'
 
         if not user:
             return jsonify({'error': 'User not found'}), 404
