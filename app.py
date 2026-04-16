@@ -54,7 +54,7 @@ def create_app():
 
         return jsonify({
             'user_id': user.id,
-            'name': user.name,
+            'name': user.id,
             'email': user.email
         }), 200
 
