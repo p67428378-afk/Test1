@@ -1,8 +1,6 @@
+
 from fastapi import FastAPI
 from backend.api.v1.endpoints import premium
-from backend.database import engine, Base
-
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 

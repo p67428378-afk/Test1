@@ -1,41 +1,48 @@
 # Vehicle Insurance Premium Calculator
 
-This project is a vehicle insurance premium calculator that provides an estimated cost based on No Claims Bonus (NCB) and vehicle details.
+This project is a vehicle insurance premium calculator that allows users to calculate their insurance premium based on their No Claims Bonus (NCB) and vehicle details.
 
 ## Application Architecture
 
-The application is built with a full-stack architecture using FastAPI for the backend and React for the frontend.
-
-- **Backend**: FastAPI, SQLAlchemy, PostgreSQL (SQLite for local development)
-- **Frontend**: React, Vite, Tailwind CSS
-
-### System Diagram
+- **Tech Stack**: FastAPI (Python) for the backend, React for the frontend, and PostgreSQL for the database.
+- **High-level component diagram**:
 
 ```mermaid
 graph TD
-    A[Frontend] --> B{API Gateway}
-    B --> C[Premium Calculation Service]
-    C --> D[NCB Rules Engine]
-    C --> E[Vehicle Multiplier Service]
-    C --> F[Policy Data Store]
+    A[Frontend] --> B{API Gateway};
+    B --> C[Premium Calculation Service];
+    C --> D[NCB Rules Engine];
+    C --> E[Vehicle Multiplier Service];
+    C --> F[Policy Data Store];
 ```
+
+- **Frontend-Backend Communication**: The frontend communicates with the backend via a RESTful API. The main endpoint is `/api/v1/insurance/premium`.
+- **Database Schema**: The database consists of three main tables: `customers`, `vehicles`, and `policies`.
 
 ## Project Structure
 
 ```
 .
 ├── backend
-│   ├── api
-│   │   └── v1
-│   │       └── endpoints
-│   │           └── premium.py
-│   ├── crud.py
-│   ├── database.py
+│   ├── app
+│   │   ├── api
+│   │   │   └── v1
+│   │   │       └── endpoints
+│   │   │           └── premium.py
+│   │   ├── core
+│   │   │   └── config.py
+│   │   ├── db
+│   │   │   └── database.py
+│   │   ├── models
+│   │   │   └── policy.py
+│   │   ├── schemas
+│   │   │   └── policy.py
+│   │   └── services
+│   │       ├── premium_calculator.py
+│   │       └── policy_service.py
 │   ├── main.py
-│   ├── models.py
-│   └── schemas.py
+│   └── requirements.txt
 ├── frontend
-│   ├── public
 │   ├── src
 │   │   ├── components
 │   │   │   ├── Calculator.jsx
@@ -49,9 +56,9 @@ graph TD
 │   ├── postcss.config.js
 │   ├── tailwind.config.js
 │   └── vite.config.js
-├── requirements.txt
 └── tests
-    ├── test_crud.py
+    ├── conftest.py
+    ├── test_policy_service.py
     └── test_premium.py
 ```
 
@@ -66,25 +73,25 @@ graph TD
 
 ### Backend
 
-1.  Clone the repository.
-2.  Create a virtual environment: `python -m venv venv`
-3.  Activate the virtual environment: `source venv/bin/activate`
-4.  Install the dependencies: `pip install -r requirements.txt`
-5.  Run the backend server: `uvicorn backend.main:app --reload`
+1.  **Clone the repo**
+2.  **Create a virtual environment**: `python -m venv venv`
+3.  **Activate the virtual environment**: `source venv/bin/activate`
+4.  **Install requirements**: `pip install -r backend/requirements.txt`
+5.  **Run the server**: `uvicorn backend.main:app --reload`
 
 ### Frontend
 
-1.  Navigate to the `frontend` directory: `cd frontend`
-2.  Install the dependencies: `npm install`
-3.  Run the frontend development server: `npm run dev`
+1.  **Navigate to the frontend directory**: `cd frontend`
+2.  **Install dependencies**: `npm install`
+3.  **Start the dev server**: `npm run dev`
 
 ## API Documentation
 
-### POST /api/v1/insurance/premium
+### `POST /api/v1/insurance/premium`
 
 Calculates the insurance premium.
 
-**Request Body:**
+**Request Body**:
 
 ```json
 {
@@ -96,7 +103,7 @@ Calculates the insurance premium.
 }
 ```
 
-**Response Body:**
+**Response**:
 
 ```json
 {
@@ -106,10 +113,5 @@ Calculates the insurance premium.
 
 ## Running Tests
 
-### Backend
-
-`pytest`
-
-### Frontend
-
-`npm test`
+- **Backend**: `pytest`
+- **Frontend**: `npm test`

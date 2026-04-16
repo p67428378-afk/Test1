@@ -1,7 +1,6 @@
-import React from 'react';
-import Sidebar from './components/Sidebar';
-import Header from './components/Header';
-import Calculator from './components/Calculator';
+import Sidebar from './components/Sidebar'
+import Header from './components/Header'
+import Calculator from './components/Calculator'
 
 function App() {
   return (
@@ -9,12 +8,10 @@ function App() {
       <Sidebar />
       <main className='ml-64 min-h-screen'>
         <Header />
-        <div className='p-12 space-y-12 max-w-[1600px] mx-auto'>
-          <Calculator />
-        </div>
+        <Calculator />
       </main>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
