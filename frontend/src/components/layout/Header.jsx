@@ -2,7 +2,7 @@ import React from 'react';
 
 const Header = () => {
     return (
-        <header className='docked w-full top-0 sticky z-50 bg-[#f9f9ff]/85 backdrop-blur-md shadow-wash font-['Inter'] tracking-tight antialiased'>
+        <header className='docked w-full top-0 sticky z-50 bg-[#f9f9ff]/85 backdrop-blur-md shadow-wash font-["Inter"] tracking-tight antialiased'>
             <div className='flex justify-between items-center h-16 px-12 max-w-[1920px] mx-auto'>
                 <div className='flex items-center gap-8'>
                     <span className='text-xl font-bold tracking-tighter text-[#151c27]'>Precision Ledger</span>
