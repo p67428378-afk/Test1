@@ -1,27 +1,12 @@
-# User Registration API
+# Test1
 
-This is a simple FastAPI application that provides an API for user registration.
+This project is a simple FastAPI application with a user registration feature.
 
 ## Application Architecture
 
 - **Tech stack**: FastAPI, SQLAlchemy, SQLite
-- **High-level component diagram**:
-  ```
-  +-----------------+      +-----------------+      +-----------------+
-  |   FastAPI App   | <--> |  Users Router   | <--> |  Users Service  |
-  +-----------------+      +-----------------+      +-----------------+
-                                                     ^
-                                                     |
-                                                     v
-                                                 +-----------------+
-                                                 |   Database      |
-                                                 +-----------------+
-  ```
-- **How frontend and backend communicate**: This is a backend-only application. The API is exposed via HTTP.
-- **Database schema overview**: The database contains a single table `users` with the following columns:
-  - `id`: Integer, Primary Key
-  - `email`: String, Unique
-  - `hashed_password`: String
+- **Backend**: The backend is a FastAPI application with a single endpoint for user creation.
+- **Database**: The application uses SQLite for the database.
 
 ## Project Structure
 
@@ -39,45 +24,19 @@ This is a simple FastAPI application that provides an API for user registration.
 │   └── services.py
 ├── requirements.txt
 └── tests
-    ├── __init__.py
     ├── conftest.py
     └── test_users.py
 ```
-
-## Prerequisites
-
-- Python 3.10+
-- pip
 
 ## Setup Instructions
 
 1.  **Clone the repo**
 2.  **Backend setup**:
-    - Create a virtual environment: `python -m venv venv`
-    - Activate the virtual environment: `source venv/bin/activate`
-    - Install requirements: `pip install -r requirements.txt`
-    - Start the server: `uvicorn backend.main:app --reload`
-
-## API Documentation
-
-- **Create User**:
-  - **Method**: `POST`
-  - **Path**: `/users/`
-  - **Request Body**:
-    ```json
-    {
-      "email": "user@example.com",
-      "password": "string"
-    }
-    ```
-  - **Response**:
-    ```json
-    {
-      "email": "user@example.com",
-      "id": 1
-    }
-    ```
+    -   Create a virtual environment: `python -m venv venv`
+    -   Activate the virtual environment: `source venv/bin/activate`
+    -   Install requirements: `pip install -r requirements.txt`
+    -   Run the server: `uvicorn backend.main:app --reload`
 
 ## Running Tests
 
-- Run backend tests: `pytest`
+-   Run backend tests: `pytest`

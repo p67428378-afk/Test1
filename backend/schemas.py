@@ -1,10 +1,12 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, Field
 
 class UserBase(BaseModel):
-    email: str
+    # Use EmailStr to automatically validate email format.
+    email: EmailStr
 
 class UserCreate(UserBase):
-    password: str
+    # Use Field to enforce a minimum password length of 8 characters.
+    password: str = Field(..., min_length=8)
 
 class User(UserBase):
     id: int
