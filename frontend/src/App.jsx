@@ -71,18 +71,18 @@ const App = () => {
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
           {/* Form Section */}
           <div className='lg:col-span-2 bg-white p-8 rounded-lg shadow-lg'>
-            <h1 className='text-3xl font-bold mb-6 text-gray-700'>Vehicle Insurance Premium Calculator</h1>
+            <h1 className='text-3xl font-bold mb-6 text-gray-700 pr-4'>Vehicle Insurance Premium Calculator</h1>
             <form onSubmit={handleSubmit}>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                <div>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6 items-center'>
+                <div className="form-group">
                   <label htmlFor="vehicle_value" className='block text-sm font-medium text-gray-600'>Vehicle Value ($)</label>
                   <input type="number" id="vehicle_value" name="vehicle_value" value={formData.vehicle_value} onChange={handleInputChange} className='mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500' required />
                 </div>
-                <div>
+                <div className="form-group">
                   <label htmlFor="tax_bracket" className='block text-sm font-medium text-gray-600'>Tax Bracket (%)</label>
                   <input type="number" id="tax_bracket" name="tax_bracket" value={formData.tax_bracket} onChange={handleInputChange} className='mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500' required />
                 </div>
-                <div>
+                <div className="form-group">
                   <label htmlFor="vehicle_type" className='block text-sm font-medium text-gray-600'>Vehicle Type</label>
                   <select id="vehicle_type" name="vehicle_type" value={formData.vehicle_type} onChange={handleInputChange} className='mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500'>
                     <option value="sedan">Sedan</option>
@@ -90,11 +90,11 @@ const App = () => {
                     <option value="hatchback">Hatchback</option>
                   </select>
                 </div>
-                <div className='md:col-span-2'>
+                <div className='md:col-span-2 form-group'>
                   <label htmlFor="ncb" className='block text-sm font-medium text-gray-600'>No-Claim Bonus (NCB): {formData.ncb}%</label>
                   <input type="range" id="ncb" name="ncb" min="20" max="50" step="5" value={formData.ncb} onChange={handleNcbChange} className='mt-1 w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer' />
                 </div>
-                <div className='md:col-span-2'>
+                <div className='md:col-span-2 form-group'>
                   <p className='block text-sm font-medium text-gray-600'>Add-ons</p>
                   <div className='mt-2 flex items-center space-x-4'>
                     <label className='flex items-center'>
@@ -137,7 +137,7 @@ const App = () => {
               </div>
             )}
              <div className='bg-white p-6 rounded-lg shadow-lg text-center'>
-                <img src="https://i.imgur.com/1z2Dm4G.png" alt="Happy family with car" className='mx-auto mb-4 rounded-lg'/>
+                <img src="https://picsum.photos/seed/picsum/200/300" alt="Happy family with car" className='mx-auto mb-4 rounded-lg'/>
                 <h3 className='font-bold text-gray-700'>New Policy Holder?</h3>
                 <p className='text-sm text-gray-600'>Learn how to maximize your savings.</p>
              </div>
